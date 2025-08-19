@@ -2,8 +2,8 @@
 Contributors: azcoov
 Tags: location, reviews, check-ins, servicepro
 Requires at least: 2.0.2
-Tested up to: 6.5
-Stable tag: 2.0.3
+Tested up to: 6.8
+Stable tag: 2.0.4
 The Nearby Now plugin allows you to display your customer reviews, job locations with photos and videos, and a service area heat-map on any blog post or web page via a short code.
 
 == Description ==
@@ -42,6 +42,9 @@ Login to admin.nearbynow.co and click the API tab to get your API Access Token. 
 
 
 == Changelog ==
+= 2.0.4 = 
+* Version Bump for WP 6.8
+
 = 2.0.3 = 
 * Filter checkin content by image labels
 * Version Bump for WP 6.5
