@@ -3,17 +3,15 @@
 	Plugin Name: Nearby Now Reviews and Audio Testimonials
 	Plugin URI: http://servicepros.nearbynow.co/plugins/wordpress-plugins/
 	Description: Nearby Now - Plugins for checkins, reviews, google reviews, heatmaps, photo and video galleries, and audio testimonials.
-	Version: 2.0.4
+	Version: 3.0.0
 	Author: Nearby Now
 	Author URI: https://www.nearbynow.co
 	*/
 
-	class NearbyNow_ShortCode
-	{
+	class NearbyNow_ShortCode {
 		static $add_scripts;
 
-		static function init()
-		{
+		static function init() {
 			add_shortcode('recentreviews', array(__CLASS__, 'get_recent_reviews'));
 			add_shortcode('serviceareamap', array(__CLASS__, 'get_service_area_map'));
 			add_shortcode('serviceareareviewcombo', array(__CLASS__, 'get_service_area_review_combo_map'));
@@ -35,8 +33,7 @@
 			add_action('wp_footer',	array(__CLASS__, 'render_scripts'));
 		}
 
-		static function get_heatmap($atts)
-		{
+		static function get_heatmap($atts) {
 			self::$add_scripts = false;
 
 			$url = self::ApiLocation() . "heatmap";
@@ -93,8 +90,7 @@
 			}
 		}
 
-		static function get_checkin($atts)
-		{
+		static function get_checkin($atts) {
 			self::$add_scripts = true;
 			$id = $_GET['usercheckin_id'];
 			if (!empty($id)) {
@@ -128,8 +124,7 @@
 			}
 		}
 
-		static function get_review($atts)
-		{
+		static function get_review($atts) {
 			self::$add_scripts = true;
 			$id = $_GET['css'];
 			if (!empty($id)) {
@@ -159,8 +154,7 @@
 			}
 		}
 
-		static function get_recent_reviews($atts)
-		{
+		static function get_recent_reviews($atts) {
 			self::$add_scripts = true;
 
 			$url = self::ApiLocation() . "nearbyreviews";
@@ -177,8 +171,7 @@
 			}
 		}
 
-		static function get_google_reviews($atts)
-		{
+		static function get_google_reviews($atts) {
 			self::$add_scripts = true;
 
 			$url = self::ApiLocation() . "googlereviews";
@@ -195,8 +188,7 @@
 			}
 		}
 
-		static function get_service_area_map($atts)
-		{
+		static function get_service_area_map($atts) {
 			self::$add_scripts = true;
 
 			$url = self::ApiLocation() . "nearbyservicearea";
@@ -213,8 +205,7 @@
 			}
 		}
 
-		static function get_service_area_review_combo_map($atts)
-		{
+		static function get_service_area_review_combo_map($atts) {
 			self::$add_scripts = true;
 
 			$url = self::ApiLocation() . "nearbyserviceareareviewcombo";
@@ -237,8 +228,7 @@
 			}
 		}
 
-		static function get_nationwide_combo($atts)
-		{
+		static function get_nationwide_combo($atts) {
 			self::$add_scripts = true;
 
 			$url = self::ApiLocation() . "nationwideserviceareareviewcombo";
@@ -256,8 +246,7 @@
 			}
 		}
 
-		static function get_testimonials($atts)
-		{
+		static function get_testimonials($atts) {
 			self::$add_scripts = true;
 			$agent = urlencode($_SERVER['HTTP_USER_AGENT']);
 			$start = isset($atts['start']) ? $atts['start'] : '';
@@ -283,8 +272,7 @@
 			}
 		}
 
-		static function get_photogallery($atts)
-		{
+		static function get_photogallery($atts) {
 			self::$add_scripts = true;
 			$agent = urlencode($_SERVER['HTTP_USER_AGENT']);
 			$start = isset($atts['start']) ? $atts['start'] : '';
@@ -310,8 +298,7 @@
 			}
 		}
 
-		static function get_faq($atts)
-		{
+		static function get_faq($atts) {
 			$agent = urlencode($_SERVER['HTTP_USER_AGENT']);
 			$topic = isset($atts['topic']) ? trim($atts['topic']) : '';
 			$count = isset($atts['count']) ? trim($atts['count']) : '';
@@ -334,15 +321,13 @@
 			}
 		}
 
-		static function register_scripts()
-		{
+		static function register_scripts() {
 			$options = get_option('nearbynow_options');
 			wp_register_style( 'nearbynow_css', 'https://d2gwjd5chbpgug.cloudfront.net/v4.2/css/nnplugin.min.css' );
 			wp_register_script( 'nearbynow_heatmap', 'https://d2gwjd5chbpgug.cloudfront.net/v3/scripts/heatmap.min.js', null, null, true);
 		}
 
-		static function render_scripts()
-		{
+		static function render_scripts() {
 			if ( ! self::$add_scripts )
 				return;
 
@@ -350,13 +335,11 @@
 			wp_print_scripts('nearbynow_heatmap');
 		}
 
-		static function ApiLocation()
-		{
+		static function ApiLocation() {
 			return "https://api.sidebox.com/plugin/";
 		}
 
-		static function get_comboparams($atts)
-		{
+		static function get_comboparams($atts) {
 			$params = array();
 
 			// Server Variables
@@ -376,6 +359,7 @@
 			if (!isset($atts['theme'])) {
 				$params['theme'] = 'masonry';
 			}
+
 			// Dynamic loading of options
 			$params['agent'] = $agent;
 			$params['referrer'] = $referrer;
@@ -385,11 +369,34 @@
 			foreach ($atts as $key => $value) {
 				$params += [$key => $value];
 			}
+
+			// Support pagination via query string (overrides shortcode if set)
+			$query_param = isset($atts['pageparam']) ? trim($atts['pageparam']) : 'page'; // Default to 'page' if not specified
+			$page = isset($_GET[$query_param]) ? intval($_GET[$query_param]) : (isset($params['Page']) ? $params['Page'] : 1);
+			if ($page > 0) {
+					$params['Page'] = $page;
+			}
+
+			// Set BaseUrl if not provided in shortcode (current URL without pagination param)
+			if (!isset($params['BaseUrl'])) {
+				$current_url = $hostUrl; // Reuse the hostUrl we already built
+				$url_parts = parse_url($current_url);
+				$base_url = $url_parts['scheme'] . '://' . $url_parts['host'] . (isset($url_parts['port']) ? ':' . $url_parts['port'] : '') . $url_parts['path'];
+				if (isset($url_parts['query'])) {
+					parse_str($url_parts['query'], $query_params);
+					unset($query_params[$query_param]); // Remove the custom pagination param
+					$new_query = http_build_query($query_params);
+					if (!empty($new_query)) {
+						$base_url .= '?' . $new_query;
+					}
+				}
+				$params['BaseUrl'] = $base_url;
+			}
+
 			return $params;
 		}
 
-		static function get_pluginparams($atts)
-		{
+		static function get_pluginparams($atts) {
 			// Server Variables
 			$agent = urlencode($_SERVER['HTTP_USER_AGENT']);
 			$referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
@@ -509,8 +516,7 @@
 
 	NearbyNow_ShortCode::init();
 
-	function nearbynow_admin()
-	{
+	function nearbynow_admin() {
 		$opt_name = array('api_token' => 'nbn_api_token');
 		$hidden_field_name = 'nbn_submit_hidden';
 		if(isset($_POST[ $hidden_field_name ]) && $_POST[ $hidden_field_name ] == 'Y' ) {
@@ -518,8 +524,7 @@
 		}
 	}
 
-	function nearbynow_admin_actions()
-	{
+	function nearbynow_admin_actions() {
     	add_options_page("Nearby Now", "Nearby Now", "manage_options", "NearbyNow", "nearbynow_options_page");
 	}
 
@@ -541,8 +546,7 @@
 		<?php
 	}
 
-	function nearbynow_admin_init()
-	{
+	function nearbynow_admin_init() {
 		register_setting(
 			'nearbynow_options',
 			'nearbynow_options',
@@ -575,19 +579,16 @@
 		add_settings_field('nearbynow_open_graph_string', 'Exclude Open Graph Headers', 'nearbynow_open_graph_string', 'nearbynow', 'nearbynow_main');
 	}
 
-	function nearbynow_section_text()
-	{
-		echo '<p>To use the plugin, simply enter one of the plugin short-codes into any page or blog post. Check out some of the examples below to help get you started.</p><pre>[recentreviews city="Mesa" state="AZ" count="10" zoomlevel="9"]</pre><pre>[serviceareamap city="Scottsdale" state="AZ" count="10" zoomlevel="9"]</pre><pre>[serviceareareviewcombo city="Scottsdale" state="AZ" checkincount="10" reviewcount="10" zoomlevel="9"]</pre><pre>[nearbynowphotogallery count="10"]</pre><p>The API Token is required for the Nearby Now Reviews and Audio Testimonials plugin to function. If the token is missing or invalid the plugin will display an empty string. Enter your API key below and click save settings.</p>';
+	function nearbynow_section_text() {
+		echo '<p>To use the plugin, simply enter one of the plugin short-codes into any page or blog post. Here is an example to help get you started.</p><pre>[heatmap city="Austin" state="TX" zoomlevel="9"]</pre> <p>The API Token is required for the Nearby Now Reviews and Audio Testimonials plugin to function. If the token is missing or invalid the plugin will display an error message. Enter your API key below and click save settings.</p>';
 	}
 
-	function nearbynow_setting_string()
-	{
+	function nearbynow_setting_string() {
 		$options = get_option('nearbynow_options');
 		echo "<input id='nearbynow_text_string' name='nearbynow_options[text_string]' size='40' type='text' value='{$options['text_string']}' />";
 	}
 
-	function nearbynow_google_maps_toggle()
-	{
+	function nearbynow_google_maps_toggle() {
 		$options = get_option('nearbynow_options');
 		$val = "0";
 
@@ -604,8 +605,7 @@
 		echo $html;
 	}
 
-	function nearbynow_options_validate($input)
-	{
+	function nearbynow_options_validate($input) {
 		return $input;
 	}
 ?>

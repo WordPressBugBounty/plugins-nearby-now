@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: azcoov
-Tags: location, reviews, check-ins, servicepro
+Tags: location, reviews, check-ins, servicepro, googlereviews
 Requires at least: 2.0.2
 Tested up to: 6.8
-Stable tag: 2.0.4
-The Nearby Now plugin allows you to display your customer reviews, job locations with photos and videos, and a service area heat-map on any blog post or web page via a short code.
+Stable tag: 3.0.0
+The Nearby Now plugin allows you to display your customer reviews, job locations with photos and videos, and a service-area heat-map on any blog post or web page via a short code.
 
 == Description ==
 
@@ -18,11 +18,11 @@ Our most powerful shortcode, the heatmap includes.
 2. A wide column of your reviews, properly coded so that search engines recognize them as reviews of your business.
 3. A narrow column of your check-ins, along with related comments and photos.
 4. A masonry tiled layout option for an even more modern look.
+5. The option to paginate the results.
 
 Place the heatmap on city-specific pages to provide for unique, rich, dynamic, and schema formatted content that is specific to that city in order to bolster rankings for each city your business services.
 
 Please login to the admin portal and view the knowledgebase for a list of all available options with the heatmap short-code, as well as additional short code options.
-
 
 If you have any questions or need any assistance with the plugins, you can email us at `support@nearbynow.co`.
 
@@ -33,6 +33,7 @@ If you have any questions or need any assistance with the plugins, you can email
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Add your API token in the settings page - Login to admin.nearbynow.co and click the API tab to get your API Access Token
 4. Place the heatmap short-code on a page or blog post: `[heatmap city="Dallas" state="TX"]`
+5. Login to the admin portal and visit the knowledgebase to view the full short-code documentation
 
 == Frequently Asked Questions ==
 
@@ -40,8 +41,19 @@ If you have any questions or need any assistance with the plugins, you can email
 
 Login to admin.nearbynow.co and click the API tab to get your API Access Token. Email us at support@nearbynow.co if you are having trouble and we'll help you out.
 
+= Which short-code should I use? =
+
+Use the Heatmap short-code, it is the most powerful way to display your checkins and reviews on your site.
+
+= Can I use multiple short-codes on a single page? =
+
+No, this is not supported. Use the Heatmap short-code, it has everything you need to display your service-area heat-map, reviews, and Google reviews.
+
 
 == Changelog ==
+= 3.0.0 = 
+* Paging is now supported! It is handeled automatically but can also be configured via the short-code.
+
 = 2.0.4 = 
 * Version Bump for WP 6.8
 
